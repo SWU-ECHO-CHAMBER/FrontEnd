@@ -51,13 +51,12 @@ class HomeViewController : UIViewController {
 private extension HomeViewController {
     
     func setupLayout() {
-        
         [
             collectionView,
         ].forEach { view.addSubview($0) }
         
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(Inset.inset)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
@@ -95,12 +94,16 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-         return CGSize(width: UIScreen.main.bounds.width - 36 * 2, height: 104)
+        return CGSize(width: UIScreen.main.bounds.width - 36 * 2, height: 104)
     }
 }
 
 extension HomeViewController : UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let newViewController = DetailNewsViewController()
+        newViewController.view.backgroundColor = .white
+        navigationController?.pushViewController(newViewController, animated: true)
+    }
 }
 
 // MARK: - Naivigation

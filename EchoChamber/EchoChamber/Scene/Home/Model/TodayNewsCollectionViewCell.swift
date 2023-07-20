@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+
+
 class TodayNewsCollectionViewCell : UICollectionViewCell {
     
     static let identifier = "TodayNewsCollectionViewCell"
@@ -41,7 +43,7 @@ class TodayNewsCollectionViewCell : UICollectionViewCell {
     
     private lazy var newsDescription: UILabel = {
         let label = UILabel()
-        label.text = "By Brad Lendon, CNN |  12:17 AM"
+        label.text = "By Brad Lendon, CNN"
         label.textColor = .subTextColor
         label.font = .systemFont(ofSize: 12.0, weight: .regular)
         label.numberOfLines = 1
