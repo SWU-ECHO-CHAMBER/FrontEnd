@@ -16,6 +16,8 @@ extension UIColor {
     
     static var systemGrayColor = #colorLiteral(red: 0.5369143486, green: 0.5369143486, blue: 0.5369143486, alpha: 1)
     
+    static var dividerColor = #colorLiteral(red: 0.9843137255, green: 0.9843137255, blue: 0.9843137255, alpha: 1)
+    
     static var errorColor = #colorLiteral(red: 1, green: 0.3044154346, blue: 0.2612361312, alpha: 1)
 }
 

@@ -21,6 +21,11 @@
 		512845AC2A6962EC00BD02EE /* Inset+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512845AB2A6962EC00BD02EE /* Inset+.swift */; };
 		512845B02A69961700BD02EE /* DetailNewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512845AF2A69961700BD02EE /* DetailNewsViewController.swift */; };
 		513619242A69B1FE00E5925D /* Extension+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513619232A69B1FE00E5925D /* Extension+.swift */; };
+		518697F62A6A6BAD0066F501 /* Divider+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697F52A6A6BAD0066F501 /* Divider+.swift */; };
+		518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697F72A6A6D440066F501 /* EditProfileViewController.swift */; };
+		518697FA2A6A79260066F501 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697F92A6A79260066F501 /* SettingViewController.swift */; };
+		518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */; };
+		518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */; };
 		51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535DE2A542EC500FB64BE /* AppDelegate.swift */; };
 		51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535E02A542EC500FB64BE /* SceneDelegate.swift */; };
 		51B535E82A542EC500FB64BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51B535E72A542EC500FB64BE /* Assets.xcassets */; };
@@ -39,6 +44,11 @@
 		512845AB2A6962EC00BD02EE /* Inset+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Inset+.swift"; sourceTree = "<group>"; };
 		512845AF2A69961700BD02EE /* DetailNewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailNewsViewController.swift; sourceTree = "<group>"; };
 		513619232A69B1FE00E5925D /* Extension+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+.swift"; sourceTree = "<group>"; };
+		518697F52A6A6BAD0066F501 /* Divider+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Divider+.swift"; sourceTree = "<group>"; };
+		518697F72A6A6D440066F501 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		518697F92A6A79260066F501 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
+		518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageCollectionViewCell.swift; sourceTree = "<group>"; };
 		51B535DB2A542EC500FB64BE /* EchoChamber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EchoChamber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B535DE2A542EC500FB64BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		51B535E02A542EC500FB64BE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +74,7 @@
 		510D86842A67D3B4008DCF16 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
+				518697F42A6A6B9E0066F501 /* Custom */,
 				510D869C2A68567B008DCF16 /* MyPage */,
 				510D86872A67D3DC008DCF16 /* Login */,
 				510D86962A6853AD008DCF16 /* Home */,
@@ -101,7 +112,6 @@
 		510D86962A6853AD008DCF16 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				510D86982A685440008DCF16 /* Model */,
 				510D86972A68542F008DCF16 /* View */,
 			);
 			path = Home;
@@ -110,19 +120,12 @@
 		510D86972A68542F008DCF16 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				512845A52A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift */,
 				510D86942A6853AA008DCF16 /* HomeViewController.swift */,
 				512845A92A6961D600BD02EE /* HomeCollectionHeaderView.swift */,
 				512845AF2A69961700BD02EE /* DetailNewsViewController.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		510D86982A685440008DCF16 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				512845A52A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		510D869B2A68551E008DCF16 /* Navigation */ = {
@@ -136,9 +139,21 @@
 		510D869C2A68567B008DCF16 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
+				518697F72A6A6D440066F501 /* EditProfileViewController.swift */,
+				518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */,
+				518697F92A6A79260066F501 /* SettingViewController.swift */,
+				518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */,
 				510D869D2A685689008DCF16 /* MyPageViewController.swift */,
 			);
 			path = MyPage;
+			sourceTree = "<group>";
+		};
+		518697F42A6A6B9E0066F501 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				518697F52A6A6BAD0066F501 /* Divider+.swift */,
+			);
+			path = Custom;
 			sourceTree = "<group>";
 		};
 		51B535D22A542EC500FB64BE = {
@@ -255,10 +270,15 @@
 				510D86892A67D3E6008DCF16 /* LoginViewcontroller.swift in Sources */,
 				510D86922A680A56008DCF16 /* Color+.swift in Sources */,
 				513619242A69B1FE00E5925D /* Extension+.swift in Sources */,
+				518697FA2A6A79260066F501 /* SettingViewController.swift in Sources */,
+				518697F62A6A6BAD0066F501 /* Divider+.swift in Sources */,
 				510D869A2A68551B008DCF16 /* TabBarController.swift in Sources */,
 				512845AA2A6961D600BD02EE /* HomeCollectionHeaderView.swift in Sources */,
 				512845B02A69961700BD02EE /* DetailNewsViewController.swift in Sources */,
 				51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */,
+				518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */,
+				518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */,
+				518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */,
 				51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */,
 				512845A62A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift in Sources */,
 				510D86862A67D3C1008DCF16 /* LaunchViewController.swift in Sources */,
