@@ -111,20 +111,27 @@ extension HomeViewController : UICollectionViewDelegate {
 private extension HomeViewController {
     func setupNavigationController() {
         
-        let logoContainer = UIView(frame: CGRect(x: 0, y: 0, width: (UIScreen.main.bounds.width - 100), height: 39))
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 89, height: 39))
-        imageView.contentMode = .scaleAspectFit
+        let leftFixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        leftFixedSpace.width = 36.0
         
-        let image = #imageLiteral(resourceName: "Logo")
-        imageView.image = image
+        let rightFixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        rightFixedSpace.width = 20.0
         
+        if let originalImage = UIImage(named: "Logo") {
+            
+            let imageSize = CGSize(width: 89, height: 39)
+            let resizedImage = originalImage.resize(to: imageSize)
+            
+            let imageView = UIImageView(image: resizedImage)
+            imageView.frame = CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height)
         
-        logoContainer.addSubview(imageView)
-        navigationItem.titleView = logoContainer
-        navigationItem.largeTitleDisplayMode = .never
-        navigationController?.navigationBar.prefersLargeTitles = true
+            let logoButton = UIBarButtonItem(customView: imageView)
+            
+            navigationItem.leftBarButtonItems = [leftFixedSpace, logoButton]
+        }
         
         let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: nil)
-        navigationItem.rightBarButtonItem = searchButton
+        
+        navigationItem.rightBarButtonItems = [rightFixedSpace, searchButton]
     }
 }
