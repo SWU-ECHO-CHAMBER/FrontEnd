@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5109E8622A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5109E8612A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift */; };
 		510D86862A67D3C1008DCF16 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510D86852A67D3C1008DCF16 /* LaunchViewController.swift */; };
 		510D86892A67D3E6008DCF16 /* LoginViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510D86882A67D3E6008DCF16 /* LoginViewcontroller.swift */; };
 		510D868C2A67D935008DCF16 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 510D868B2A67D935008DCF16 /* SnapKit */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5109E8612A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCollectionViewHeader.swift; sourceTree = "<group>"; };
 		510D86852A67D3C1008DCF16 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		510D86882A67D3E6008DCF16 /* LoginViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewcontroller.swift; sourceTree = "<group>"; };
 		510D86912A680A56008DCF16 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				518697F92A6A79260066F501 /* SettingViewController.swift */,
 				518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */,
 				510D869D2A685689008DCF16 /* MyPageViewController.swift */,
+				5109E8612A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */,
 				518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */,
 				518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */,
+				5109E8622A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift in Sources */,
 				51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */,
 				512845A62A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift in Sources */,
 				510D86862A67D3C1008DCF16 /* LaunchViewController.swift in Sources */,

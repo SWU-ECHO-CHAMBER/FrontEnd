@@ -19,7 +19,7 @@ class MypageCollectionViewCell : UICollectionViewCell {
         let imageView = UIImageView()
         
         if let imageURL = URL(string: "https://media.cnn.com/api/v1/images/stellar/prod/230719105428-trump-nevada-0708.jpg?c=16x9&q=w_800,c_fill"){
-          imageView.kf.setImage(with: imageURL)
+            imageView.kf.setImage(with: imageURL)
         }
         
         imageView.contentMode = .scaleAspectFill
