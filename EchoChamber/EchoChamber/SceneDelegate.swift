@@ -16,7 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.backgroundColor = .systemBackground
         window?.tintColor = .mainColor
-        window?.rootViewController = LoginViewcontroller()
+        
+        let rootVC = LoginViewcontroller()
+        let rootNavigationVC = UINavigationController(rootViewController: rootVC)
+        
+        window?.rootViewController = rootNavigationVC
         window?.makeKeyAndVisible()
     }
     

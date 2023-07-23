@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-
-
 class TodayNewsCollectionViewCell : UICollectionViewCell {
     
     static let identifier = "TodayNewsCollectionViewCell"
@@ -86,10 +84,17 @@ class TodayNewsCollectionViewCell : UICollectionViewCell {
     }()
         
     func setup() {
-//        backgroundColor = .white
         self.setupLayout()
     }
     
+    func setupServer(with newsData: News.NewsData) {
+        self.newsTitle.text =  newsData.title
+        self.newsDescription.text = "\(newsData.author ?? ""), \(newsData.source ?? "")"
+        
+        if let imageURL = URL(string: newsData.imageURL ?? "") {
+            newsImageView.kf.setImage(with: imageURL)
+        }
+    }
 }
 
 private extension TodayNewsCollectionViewCell {
@@ -126,3 +131,4 @@ private extension TodayNewsCollectionViewCell {
         }
     }
 }
+

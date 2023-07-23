@@ -273,7 +273,6 @@ private extension LoginViewcontroller {
             $0.centerX.equalToSuperview()
         }
     }
-    
 }
 
 // MARK: - @objc
@@ -284,7 +283,9 @@ private extension LoginViewcontroller {
     }
     
     @objc func tapSignupButton() {
-        print("SIGN UP")
+        let signUPController = RegisterViewController()
+        signUPController.view.backgroundColor = .white
+          navigationController?.pushViewController(signUPController, animated: true)
     }
 }
 

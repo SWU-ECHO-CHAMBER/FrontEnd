@@ -34,6 +34,9 @@
 		51F9CE402A6CE7D5000200EB /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE3F2A6CE7D5000200EB /* RegisterViewController.swift */; };
 		51F9CE422A6D0E37000200EB /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE412A6D0E37000200EB /* URL.swift */; };
 		51F9CE442A6D1FDF000200EB /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE432A6D1FDF000200EB /* StatusCode.swift */; };
+		51F9CE472A6D58E7000200EB /* NewsDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE462A6D58E7000200EB /* NewsDetail.swift */; };
+		51F9CE492A6D5C86000200EB /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE482A6D5C86000200EB /* News.swift */; };
+		51F9CE4B2A6D6773000200EB /* NewsTop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE4A2A6D6773000200EB /* NewsTop.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +66,9 @@
 		51F9CE3F2A6CE7D5000200EB /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		51F9CE412A6D0E37000200EB /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		51F9CE432A6D1FDF000200EB /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
+		51F9CE462A6D58E7000200EB /* NewsDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetail.swift; sourceTree = "<group>"; };
+		51F9CE482A6D5C86000200EB /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
+		51F9CE4A2A6D6773000200EB /* NewsTop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTop.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +139,7 @@
 		510D86962A6853AD008DCF16 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				51F9CE452A6D58E3000200EB /* Model */,
 				510D86972A68542F008DCF16 /* View */,
 			);
 			path = Home;
@@ -205,6 +212,16 @@
 				51B535EC2A542EC500FB64BE /* Info.plist */,
 			);
 			path = EchoChamber;
+			sourceTree = "<group>";
+		};
+		51F9CE452A6D58E3000200EB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				51F9CE462A6D58E7000200EB /* NewsDetail.swift */,
+				51F9CE482A6D5C86000200EB /* News.swift */,
+				51F9CE4A2A6D6773000200EB /* NewsTop.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -288,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				510D86892A67D3E6008DCF16 /* LoginViewcontroller.swift in Sources */,
+				51F9CE472A6D58E7000200EB /* NewsDetail.swift in Sources */,
 				510D86922A680A56008DCF16 /* Color+.swift in Sources */,
 				513619242A69B1FE00E5925D /* Extension+.swift in Sources */,
 				518697FA2A6A79260066F501 /* SettingViewController.swift in Sources */,
@@ -297,6 +315,7 @@
 				512845B02A69961700BD02EE /* DetailNewsViewController.swift in Sources */,
 				51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */,
 				518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */,
+				51F9CE4B2A6D6773000200EB /* NewsTop.swift in Sources */,
 				518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */,
 				51F9CE402A6CE7D5000200EB /* RegisterViewController.swift in Sources */,
 				51F9CE442A6D1FDF000200EB /* StatusCode.swift in Sources */,
@@ -304,6 +323,7 @@
 				51F9CE422A6D0E37000200EB /* URL.swift in Sources */,
 				5109E8622A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift in Sources */,
 				51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */,
+				51F9CE492A6D5C86000200EB /* News.swift in Sources */,
 				512845A62A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift in Sources */,
 				510D86862A67D3C1008DCF16 /* LaunchViewController.swift in Sources */,
 				510D86952A6853AA008DCF16 /* HomeViewController.swift in Sources */,

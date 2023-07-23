@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SwiftUI
+import Alamofire
 
 class MyPageViewController : UIViewController {
     
@@ -122,8 +123,9 @@ private extension MyPageViewController {
             navigationItem.leftBarButtonItems = [leftFixedSpace, logoButton]
         }
         
-        let logoutButton = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: nil)
+        let logoutButton = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: #selector(didTapLogoutButton))
         logoutButton.tintColor = .mainColor
+        
         
         let settingButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(didTapStettingButton))
         settingButton.tintColor = .mainColor
@@ -138,6 +140,7 @@ private extension MyPageViewController {
     
     @objc func didTapLogoutButton() {
         print("Logout")
+        logout()
     }
     
     @objc func didTapStettingButton() {
@@ -181,3 +184,44 @@ extension MyPageViewController : MyPageCollectionViewHeaderDelegate {
         navigationController?.pushViewController(nextController, animated: true)
     }
 }
+
+extension MyPageViewController {
+    private func logout() {
+        let url = LoginUrlCategory().LOGOUT_URL
+        let accessToken = UserDefaults.standard.string(forKey: "AccessToken")
+        
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken ?? "")"]
+        
+        AF.request(url, method: .post, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: LoginResponse.self) { response in
+            
+            switch response.result {
+            case .success(_):
+                if let statusCode = response.response?.statusCode {
+                    if statusCode == 200 {
+                        let newViewController = LoginViewcontroller()
+                      let navigationController = UINavigationController(rootViewController: newViewController)
+                      navigationController.modalTransitionStyle = .crossDissolve
+                      navigationController.modalPresentationStyle = .fullScreen
+                        self.present(navigationController, animated: true, completion: nil)
+                        print("Logout Success")
+                    }
+                }
+            case .failure(_):
+                print("Error Code : \(response.response?.statusCode)")
+                
+                if let statusCode = response.response?.statusCode {
+                    if statusCode == 403 {
+                        let newViewController = LoginViewcontroller()
+                      let navigationController = UINavigationController(rootViewController: newViewController)
+                      navigationController.modalTransitionStyle = .crossDissolve
+                      navigationController.modalPresentationStyle = .fullScreen
+                        self.present(navigationController, animated: true, completion: nil)
+                        print("Logout Success")
+                    }
+                }
+            }
+        }
+    }
+
+}
+

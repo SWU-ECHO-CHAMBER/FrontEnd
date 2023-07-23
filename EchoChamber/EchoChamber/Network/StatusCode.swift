@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - StatusCode 코드와 메시지
+
 enum LoginStatusCode : Int {
     case ok = 200
     case UserNotFound = 401
@@ -27,3 +29,16 @@ enum LoginStatusCode : Int {
     }
 }
 
+enum EntireNewsStatusCode : Int {
+    case DataNotFound = 404
+    case ServerError = 500
+    
+    var description: String {
+        switch self {
+        case .DataNotFound:
+            return "데이터 요청중..."
+        case .ServerError:
+            return "서버 코드 에러 ☠️. 관리자에게 문의 부탁드립니다."
+        }
+    }
+}

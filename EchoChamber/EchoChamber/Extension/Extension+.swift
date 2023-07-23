@@ -16,3 +16,17 @@ extension UIImage {
         return resizedImage ?? self
     }
 }
+
+func formatDateTime(_ inputDateString: String, fromFormat: String, toFormat: String) -> String? {
+    let inputFormatter = DateFormatter()
+    inputFormatter.dateFormat = fromFormat
+
+    if let date = inputFormatter.date(from: inputDateString) {
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = toFormat
+        return outputFormatter.string(from: date)
+    } else {
+        return nil
+    }
+}
+
