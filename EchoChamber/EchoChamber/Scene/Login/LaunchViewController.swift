@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import SnapKit
 
 class LaunchViewController: UIViewController {
@@ -58,4 +59,21 @@ private extension LaunchViewController {
             $0.height.equalTo(148.0)
         }
     }
+}
+
+// MARK: - PreviewProvider
+
+struct LaunchViewController_Previews: PreviewProvider {
+  static var previews: some View {
+    Container().edgesIgnoringSafeArea(.all)
+  }
+  
+  struct Container: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+      let homeViewController = LaunchViewController()
+      return UINavigationController(rootViewController: homeViewController)
+    }
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    typealias UIViewControllerType = UIViewController
+  }
 }

@@ -31,6 +31,9 @@
 		51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535E02A542EC500FB64BE /* SceneDelegate.swift */; };
 		51B535E82A542EC500FB64BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51B535E72A542EC500FB64BE /* Assets.xcassets */; };
 		51B535EB2A542EC500FB64BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51B535E92A542EC500FB64BE /* LaunchScreen.storyboard */; };
+		51F9CE402A6CE7D5000200EB /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE3F2A6CE7D5000200EB /* RegisterViewController.swift */; };
+		51F9CE422A6D0E37000200EB /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE412A6D0E37000200EB /* URL.swift */; };
+		51F9CE442A6D1FDF000200EB /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F9CE432A6D1FDF000200EB /* StatusCode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +60,9 @@
 		51B535E72A542EC500FB64BE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		51B535EA2A542EC500FB64BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		51B535EC2A542EC500FB64BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51F9CE3F2A6CE7D5000200EB /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		51F9CE412A6D0E37000200EB /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		51F9CE432A6D1FDF000200EB /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5109E8632A6C533900AEC01E /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5109E8612A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift */,
+				518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */,
+				518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		510D86842A67D3B4008DCF16 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +106,7 @@
 			children = (
 				510D86852A67D3C1008DCF16 /* LaunchViewController.swift */,
 				510D86882A67D3E6008DCF16 /* LoginViewcontroller.swift */,
+				51F9CE3F2A6CE7D5000200EB /* RegisterViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -107,6 +124,8 @@
 		510D86932A681017008DCF16 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				51F9CE412A6D0E37000200EB /* URL.swift */,
+				51F9CE432A6D1FDF000200EB /* StatusCode.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -141,12 +160,10 @@
 		510D869C2A68567B008DCF16 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
+				5109E8632A6C533900AEC01E /* Cell */,
 				518697F72A6A6D440066F501 /* EditProfileViewController.swift */,
-				518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */,
 				518697F92A6A79260066F501 /* SettingViewController.swift */,
-				518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */,
 				510D869D2A685689008DCF16 /* MyPageViewController.swift */,
-				5109E8612A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -281,7 +298,10 @@
 				51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */,
 				518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */,
 				518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */,
+				51F9CE402A6CE7D5000200EB /* RegisterViewController.swift in Sources */,
+				51F9CE442A6D1FDF000200EB /* StatusCode.swift in Sources */,
 				518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */,
+				51F9CE422A6D0E37000200EB /* URL.swift in Sources */,
 				5109E8622A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift in Sources */,
 				51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */,
 				512845A62A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift in Sources */,
