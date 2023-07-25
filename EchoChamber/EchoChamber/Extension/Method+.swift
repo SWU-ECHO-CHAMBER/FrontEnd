@@ -52,3 +52,11 @@ func formatDateTime(_ inputDateString: String, fromFormat: String, toFormat: Str
     }
 }
 
+// 문자열 -> 데이터포맷
+func formatStringToDateTime(_ dateString: String, format: String) -> Date? {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = format
+    return dateFormatter.date(from: dateString)
+}
+
+

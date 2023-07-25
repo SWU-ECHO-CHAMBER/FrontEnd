@@ -138,7 +138,11 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let newsID : Int = newsList[indexPath.item].newsID
         let newViewController = DetailNewsViewController()
+        
+        newViewController.newsID = newsID
         newViewController.view.backgroundColor = .white
         navigationController?.pushViewController(newViewController, animated: true)
     }

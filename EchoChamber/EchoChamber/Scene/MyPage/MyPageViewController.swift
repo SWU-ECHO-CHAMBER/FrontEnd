@@ -39,6 +39,19 @@ class MyPageViewController : UIViewController {
         
         self.setupNavigationController()
         self.setupLayout()
+        
+        self.getBookmarkList(completionHandler: { [weak self] result in
+          guard let self = self else { return }
+            
+          switch result {
+          case let .success(data):
+            
+              print(data)
+          case let .failure(error):
+              print("ERROR : \(error.localizedDescription)")
+          }
+        })
+        
     }
 }
 
@@ -185,8 +198,10 @@ extension MyPageViewController : MyPageCollectionViewHeaderDelegate {
     }
 }
 
-extension MyPageViewController {
-    private func logout() {
+// MARK: - Server (Logout)
+
+private extension MyPageViewController {
+    func logout() {
         let url = LoginUrlCategory().LOGOUT_URL
         let accessToken = UserDefaults.standard.string(forKey: "AccessToken")
         
@@ -221,6 +236,38 @@ extension MyPageViewController {
                 }
             }
         }
+    }
+
+}
+
+// MARK: - Server (Bookmark)
+private extension MyPageViewController {
+    
+    func getBookmarkList(completionHandler: @escaping (Result <Bookmark, Error> ) -> Void) {
+        let url = MyPageUrlCategory().BOOKMARK_LIST_URL
+
+      let header : HTTPHeaders = [
+        "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
+        "Content-Type": "application/json"
+        ]
+
+        AF.request(url, method: .get, headers: header)
+              .responseData(completionHandler: { [weak self] response in
+                    guard let self = self else { return }
+              switch response.result {
+              case let .success(data):
+                  do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(Bookmark.self, from: data)
+                    completionHandler(.success(result))
+                  } catch {
+                    completionHandler(.failure(error))
+                  }
+              case let .failure(error):
+                completionHandler(.failure(error))
+              }
+          }
+        )
     }
 
 }

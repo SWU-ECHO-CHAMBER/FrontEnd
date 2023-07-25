@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.backgroundColor = .systemBackground
         window?.tintColor = .mainColor
         
-        let rootVC = LoginViewcontroller()
+        let rootVC = TabBarController()
         let rootNavigationVC = UINavigationController(rootViewController: rootVC)
         
         window?.rootViewController = rootNavigationVC

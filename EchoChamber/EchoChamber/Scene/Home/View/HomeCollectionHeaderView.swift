@@ -154,7 +154,8 @@ class HomeCollectionHeaderView : UICollectionReusableView {
             guard let self = self else { return }
             switch result {
             case let .success(result):
-                self.updateHeaderImage(imageURL: "\(result.data.imageURL ?? "")")
+                
+                self.updateHeaderImage(imageURL: "\(result.data.imageURL ?? "https://i.pinimg.com/564x/25/cb/0b/25cb0b4b31c9b5c0a82fbe15b4e10ad8.jpg")")
                 self.newsTitle.text = result.data.title
                 self.newsAuthor.text = "\(result.data.author ?? "author"), \(result.data.source)"
                 self.newsPublished.text = self.updatePublishedTime(inputDateString: result.data.publishedAt)

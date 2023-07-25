@@ -24,13 +24,13 @@ class LoginUrlCategory {
 final class NewsUrlCategory {
     
     let ENTIRE_NEWS_URL = "\(BASE_URL)/news"
-    
+
     func detailNewsUrl(id: Int) -> String {
-        return "\(BASE_URL)/news/detail/\(id)}"
+        return "\(BASE_URL)/news/detail/\(id)"
     }
     
-    func editBookmarkURL(id: Int) -> String {
-        return "\(BASE_URL)/news/mark/\(id)"
+    func editBookmarkURL(newsId: Int) -> String {
+        return "\(BASE_URL)/news/mark/\(newsId)"
     }
     
     let POPULAR_NEWS_TOP_URL = "\(BASE_URL)/news/top"
