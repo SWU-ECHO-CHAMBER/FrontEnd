@@ -77,6 +77,8 @@ class RegisterViewController : UIViewController {
         textField.layer.cornerRadius = 9.0
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
+        textField.keyboardType = .emailAddress
+        textField.textContentType = .emailAddress
         textField.heightAnchor.constraint(equalToConstant: 54.0).isActive = true
         textField.textColor = UIColor(hex: "#767676")
         textField.layer.borderColor = UIColor(hex: "#767676").cgColor
@@ -155,7 +157,10 @@ class RegisterViewController : UIViewController {
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
         textField.placeholder = "ex) echochamber12!!"
+        textField.textContentType = .oneTimeCode
         textField.isSecureTextEntry = true
+        
+        
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -219,7 +224,7 @@ class RegisterViewController : UIViewController {
         textField.placeholder = "ex) echochamber_12"
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
-        textField.isSecureTextEntry = true
+        // textField.isSecureTextEntry = true
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -233,6 +238,8 @@ class RegisterViewController : UIViewController {
         textField.rightViewMode = .always
         textField.leftView = nickNameSpacingView
         textField.rightView = stackView
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         return textField
     }()
@@ -275,8 +282,21 @@ class RegisterViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupLayout()
+        self.keyboardNotification()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
 }
 
 private extension RegisterViewController {
@@ -438,6 +458,14 @@ extension RegisterViewController : UITextFieldDelegate {
         
         return true
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == nicknameTextField {
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+        } else {
+            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        }
+    }
 }
 
 // MARK: - UITextFieldDelegate 관련된 메서드들
@@ -486,6 +514,11 @@ private extension RegisterViewController {
                 self.signupButton.backgroundColor = UIColor(hex: "#B9B9B9")
             }
         }
+    }
+    
+    func keyboardNotification() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+          view.addGestureRecognizer(tap)
     }
 }
 
@@ -542,7 +575,7 @@ private extension RegisterViewController {
     
     @objc func didTapSignupButton() {
         if emailIsPassed && passwordIsPassed && nicknameIsPassed == true {
-            fetchRegister(email: emailTextField.text ?? "", password: passwordTextField.text ?? "", nickname: nicknameTextField.text ?? "")
+            fetchRegister(email: emailTextField.text ?? "", password: passwordTextField.text ?? "", nickname: nicknameTextField.text ?? "", profileImage: uploadImageToServer)
         }
     }
     
@@ -555,6 +588,36 @@ private extension RegisterViewController {
         imagePicker.delegate = self
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
+    }
+    
+    @objc func dismissKeyboard() {
+       view.endEditing(true)
+        UIView.animate(withDuration: 0.3) {
+            self.view.frame.origin.y = 0
+        }
+    }
+    
+    @objc func keyboardWillshowHandle(notification: NSNotification, textField : UITextField) {
+        print("keyboardWillshow")
+
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            print("keyboardSize : \(keyboardSize.height)")
+            print("nicknameTextField : \(nicknameTextField.frame.origin.y)")
+
+            if keyboardSize.height < nicknameTextField.frame.origin.y {
+                let distance = keyboardSize.height - nicknameTextField.frame.origin.y
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.view.frame.origin.y = distance + self.nicknameTextField.frame.height
+                    print("distance : \(distance)")
+                    print("textfield : \(self.nicknameTextField.frame.height)")
+                }
+            }
+        }
+    }
+
+    @objc func keyboardWillHideHandle() {
+        print("keyboardWillHide")
     }
 }
 
@@ -621,29 +684,37 @@ private extension RegisterViewController {
 // MARK: - Server) 회원가입
 
 private extension RegisterViewController {
-    func fetchRegister(email : String, password: String, nickname: String) {
-        if emailIsPassed && emailRedundancyIsPassed && passwordIsPassed && nicknameIsPassed ==
-            true {
-            
-            // let profile : UIImage? = uploadImageToServer
-            
-            print("email : \(email), password: \(password), nickname : \(nickname)")
-            
-            let parameters: [String: Any] = [
-              "email" : email,
-              "password" : password,
-              "nickname" : nickname,
-            ]
-                
+    
+    func fetchRegister(email: String, password: String, nickname: String, profileImage: UIImage?) {
+        if emailIsPassed && emailRedundancyIsPassed && passwordIsPassed && nicknameIsPassed {
             let url = LoginUrlCategory().REGISTER_LOGIN_URL
             
-            AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default)
-              .responseJSON { response in
+            var parameters: [String: Any] = [
+                "email": email,
+                "password": password,
+                "nickname": nickname
+            ]
+
+            if let profile = profileImage {
+                if let imageData = profile.jpegData(compressionQuality: 0.7) {
+                    parameters["profile"] = imageData
+                }
+            }
+
+            AF.upload(multipartFormData: { formData in
+                for (key, value) in parameters {
+                    if let stringValue = value as? String {
+                        formData.append(stringValue.data(using: .utf8)!, withName: key)
+                    } else if let imageData = value as? Data {
+                        formData.append(imageData, withName: key, fileName: "profile(\(nickname)).jpg", mimeType: "image/jpeg")
+                    }
+                }
+            }, to: url).response { response in
                 switch response.result {
                 case .success(_):
                     guard let statusCode = response.response?.statusCode else { return }
                     if statusCode == 200 {
-                        self.dismiss(animated: true)
+                        self.registerSuccessAlert(message: "Membership registration completed! 🎉")
                     } else if statusCode == 400 {
                         print(response.description)
                         self.registerErrorAlert(message: "Please check again to see if all the formats are written correctly.")
@@ -654,7 +725,7 @@ private extension RegisterViewController {
                     self.registerErrorAlert(message: "Server error ☠️ Please contact the administrator.")
                     print("Error: \(error.localizedDescription)")
                 }
-              }
+            }
         }
     }
     
@@ -662,13 +733,24 @@ private extension RegisterViewController {
         let actionSheet = UIAlertController(title: nil, message: message, preferredStyle: .alert)
           [
             UIAlertAction(title: "Close", style: .cancel) { _ in
-                print("Close")
+               
             }
           ].forEach {
             actionSheet.addAction($0)
           }
           present(actionSheet, animated: true)
     }
-
+    
+    func registerSuccessAlert(message : String) {
+        let actionSheet = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+          [
+            UIAlertAction(title: "OK", style: .cancel) { _ in
+                self.navigationController?.popViewController(animated: true)
+            }
+          ].forEach {
+            actionSheet.addAction($0)
+          }
+          present(actionSheet, animated: true)
+    }
 }
 
