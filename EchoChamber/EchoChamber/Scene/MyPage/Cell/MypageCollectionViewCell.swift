@@ -55,6 +55,18 @@ class MypageCollectionViewCell : UICollectionViewCell {
         self.setupLayout()
     }
     
+    func setupServer(with newsData: Bookmark.BookmarkDataClass) {
+        
+        if let imageURL = URL(string: newsData.imageURL ) {
+            self.cellImageView.kf.setImage(with: imageURL)
+        }
+        self.titleLabel.text = newsData.title
+        let inputDateString = newsData.publishedAt
+        if let formattedDate = formatStringToDateTime(inputDateString, format: "h:mm a") {
+            self.subtitleLabel.text = "By \(newsData.author), \(newsData.source) | \(formattedDate)"
+        }
+    }
+    
 }
 
 private extension MypageCollectionViewCell {

@@ -85,7 +85,6 @@ private extension HomeViewController {
             switch result {
             case  .success(let newsData):
                 self.newsList = newsData.data
-                
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
@@ -96,7 +95,7 @@ private extension HomeViewController {
     }
 }
 
-// MARK: - CollectionView
+// MARK: - CollectionView - UICollectionViewDataSource
 
 extension HomeViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -125,6 +124,8 @@ extension HomeViewController : UICollectionViewDataSource {
     
 }
 
+// MARK: - CollectionView - UICollectionViewDelegateFlowLayout
+
 extension HomeViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 400)
@@ -135,6 +136,8 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout {
         return CGSize(width: UIScreen.main.bounds.width - 36 * 2, height: 104)
     }
 }
+
+// MARK: - CollectionView - UICollectionViewDelegate
 
 extension HomeViewController : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

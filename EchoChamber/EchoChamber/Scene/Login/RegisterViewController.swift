@@ -601,16 +601,12 @@ private extension RegisterViewController {
         print("keyboardWillshow")
 
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            print("keyboardSize : \(keyboardSize.height)")
-            print("nicknameTextField : \(nicknameTextField.frame.origin.y)")
 
-            if keyboardSize.height < nicknameTextField.frame.origin.y {
+            if keyboardSize.height > nicknameTextField.frame.origin.y {
                 let distance = keyboardSize.height - nicknameTextField.frame.origin.y
                 
                 UIView.animate(withDuration: 0.3) {
                     self.view.frame.origin.y = distance + self.nicknameTextField.frame.height
-                    print("distance : \(distance)")
-                    print("textfield : \(self.nicknameTextField.frame.height)")
                 }
             }
         }
@@ -714,6 +710,8 @@ private extension RegisterViewController {
                 case .success(_):
                     guard let statusCode = response.response?.statusCode else { return }
                     if statusCode == 200 {
+                        UserDefaults.standard.set(nickname, forKey: "Nickname")
+                        UserDefaults.standard.set(email, forKey: "Email")
                         self.registerSuccessAlert(message: "Membership registration completed! 🎉")
                     } else if statusCode == 400 {
                         print(response.description)
