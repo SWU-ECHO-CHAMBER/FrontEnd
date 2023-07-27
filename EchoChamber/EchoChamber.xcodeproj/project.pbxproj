@@ -29,6 +29,7 @@
 		518697FA2A6A79260066F501 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697F92A6A79260066F501 /* SettingViewController.swift */; };
 		518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */; };
 		518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */; };
+		51B08EEE2A7197690088DBE4 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B08EED2A7197690088DBE4 /* ChangePasswordViewController.swift */; };
 		51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535DE2A542EC500FB64BE /* AppDelegate.swift */; };
 		51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535E02A542EC500FB64BE /* SceneDelegate.swift */; };
 		51B535E82A542EC500FB64BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51B535E72A542EC500FB64BE /* Assets.xcassets */; };
@@ -61,6 +62,7 @@
 		518697F92A6A79260066F501 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageCollectionViewCell.swift; sourceTree = "<group>"; };
+		51B08EED2A7197690088DBE4 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		51B535DB2A542EC500FB64BE /* EchoChamber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EchoChamber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B535DE2A542EC500FB64BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		51B535E02A542EC500FB64BE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				518697F72A6A6D440066F501 /* EditProfileViewController.swift */,
 				518697F92A6A79260066F501 /* SettingViewController.swift */,
 				510D869D2A685689008DCF16 /* MyPageViewController.swift */,
+				51B08EED2A7197690088DBE4 /* ChangePasswordViewController.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				5109E8622A6C3AAC00AEC01E /* MyPageCollectionViewHeader.swift in Sources */,
 				51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */,
 				51F9CE492A6D5C86000200EB /* News.swift in Sources */,
+				51B08EEE2A7197690088DBE4 /* ChangePasswordViewController.swift in Sources */,
 				512845A62A692EDE00BD02EE /* TodayNewsCollectionViewCell.swift in Sources */,
 				510D86862A67D3C1008DCF16 /* LaunchViewController.swift in Sources */,
 				510D86952A6853AA008DCF16 /* HomeViewController.swift in Sources */,

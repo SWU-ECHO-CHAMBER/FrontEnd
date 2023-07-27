@@ -114,10 +114,10 @@ class EditProfileViewController : UIViewController {
         super.viewWillAppear(animated)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle(notification: )), name: UIResponder.keyboardWillShowNotification, object: nil)
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -147,7 +147,7 @@ private extension EditProfileViewController {
             dividerView,
             doneButton,
         ].forEach { view.addSubview($0) }
-         
+        
         userProfileImageView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).inset(158.0)
             $0.centerX.equalTo(view.safeAreaLayoutGuide)
@@ -195,20 +195,20 @@ extension EditProfileViewController : UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-      let maxLength = 20
-      let currentString = (textField.text ?? "") as NSString
-      let newString = currentString.replacingCharacters(in: range, with: string)
-
-      return newString.count <= maxLength
+        let maxLength = 20
+        let currentString = (textField.text ?? "") as NSString
+        let newString = currentString.replacingCharacters(in: range, with: string)
+        
+        return newString.count <= maxLength
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-      textField.resignFirstResponder()
-    view.endEditing(true)
-     UIView.animate(withDuration: 0.3) {
-         self.view.frame.origin.y = 0
-     }
-      return true
+        textField.resignFirstResponder()
+        view.endEditing(true)
+        UIView.animate(withDuration: 0.3) {
+            self.view.frame.origin.y = 0
+        }
+        return true
     }
 }
 
@@ -216,23 +216,23 @@ extension EditProfileViewController : UITextFieldDelegate {
 
 extension EditProfileViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-    picker.dismiss(animated: true, completion: nil)
-
-    if let pickedImage = info[.originalImage] as? UIImage {
-      self.userProfileImageView.image = pickedImage
-      self.userProfileImageView.contentMode = .scaleAspectFill
-      self.userProfileImageView.clipsToBounds = true
-      self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.frame.size.width / 2
+        picker.dismiss(animated: true, completion: nil)
         
-    if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            uploadImageToServer = selectedImage
+        if let pickedImage = info[.originalImage] as? UIImage {
+            self.userProfileImageView.image = pickedImage
+            self.userProfileImageView.contentMode = .scaleAspectFill
+            self.userProfileImageView.clipsToBounds = true
+            self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.frame.size.width / 2
+            
+            if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                uploadImageToServer = selectedImage
+            }
         }
     }
-  }
-
-  func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-    picker.dismiss(animated: true, completion: nil)
-  }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
 }
 
 // MARK: - @objc & method
@@ -240,7 +240,7 @@ private extension EditProfileViewController {
     
     func keyboardNotification() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
-          view.addGestureRecognizer(tap)
+        view.addGestureRecognizer(tap)
     }
     
     func setupProfileImage() {
@@ -256,13 +256,13 @@ private extension EditProfileViewController {
     
     func errorAlert(message : String) {
         let actionSheet = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-          [
+        [
             UIAlertAction(title: "Close", style: .cancel) { _ in
             }
-          ].forEach {
+        ].forEach {
             actionSheet.addAction($0)
-          }
-          present(actionSheet, animated: true)
+        }
+        present(actionSheet, animated: true)
     }
     
     @objc func didTapCamerButton() {
@@ -273,31 +273,31 @@ private extension EditProfileViewController {
     }
     
     @objc func didTapDoneButton() {
-//        self.sendPatchRequest(nickname: (self.usernameTextField.text ?? "") as String)
-        self.fetchProfileImage()
+        guard let nickname = self.usernameTextField.text else { return }
+        self.sendPatchRequest(nickname: nickname)
     }
     
     @objc func keyboardWillshowHandle(notification: NSNotification) {
-
-      if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-          
-        if keyboardSize.height > usernameTextField.frame.origin.y {
-          let distance = usernameTextField.frame.origin.y - keyboardSize.height
+        
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             
-          UIView.animate(withDuration: 0.3) {
-              self.view.frame.origin.y = (distance / 3) + self.usernameTextField.frame.height
-          }
+            if keyboardSize.height > usernameTextField.frame.origin.y {
+                let distance = usernameTextField.frame.origin.y - keyboardSize.height
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.view.frame.origin.y = (distance / 3) + self.usernameTextField.frame.height
+                }
+            }
         }
-      }
     }
     
     @objc func dismissKeyboard() {
-       view.endEditing(true)
+        view.endEditing(true)
         UIView.animate(withDuration: 0.3) {
             self.view.frame.origin.y = 0
         }
     }
-
+    
     @objc func keyboardWillHideHandle() { }
 }
 
@@ -306,91 +306,103 @@ private extension EditProfileViewController {
     
     func fetchProfileImage() {
         
-        let profileURL = MyPageUrlCategory().CHANGE_PROFILE_URL
-        
-        let header : HTTPHeaders = [
-          "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
-          "Content-Type": "multipart/form-data"
-        ]
-        
-        let profileParameters : Parameters = [
-            "profile" : uploadImageToServer as Any
-        ]
-        
-        AF.upload(multipartFormData: { formData in
-              for (key, value) in profileParameters {
-                if let stringValue = value as? String {
-                  formData.append(stringValue.data(using: .utf8)!, withName: key)
-                } else if let imageData = value as? Data {
-                  formData.append(imageData, withName: key, fileName: "profile(\(self.usernameTextField.text ?? (UserDefaults.standard.string(forKey: "Nickname") ?? ""))).jpg", mimeType: "image/jpeg")
+        if let profile = uploadImageToServer {
+            
+            if let imageData = profile.jpegData(compressionQuality: 0.7) {
+            
+                let profileParameters : Parameters = [
+                    "profile" : imageData
+                ]
+                
+                let profileURL = MyPageUrlCategory().CHANGE_PROFILE_URL
+                
+                let header : HTTPHeaders = [
+                    "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
+                    "Content-Type": "multipart/form-data"
+                ]
+                
+                AF.upload(multipartFormData: { formData in
+                    for (key, value) in profileParameters {
+                        if let stringValue = value as? String {
+                            formData.append(stringValue.data(using: .utf8)!, withName: key)
+                        } else if let imageData = value as? Data {
+                            formData.append(imageData, withName: key, fileName: "\(UserDefaults.standard.string(forKey: "Email")!).jpeg", mimeType: "image/jpeg")
+                        }
+                    }
+                }, to: profileURL,
+                          method: .patch,
+                          headers: header
+                ).response { response in
+                    switch response.result {
+                    case .success(_):
+                        guard let statusCode = response.response?.statusCode else { return }
+                        print("statusCode : \(statusCode) / data : \(response.result)")
+                        if statusCode == 201 {
+                            // self.errorAlert(message: "Suceess Upload 🎉")
+                            self.navigationController?.popViewController(animated: true)
+                        } else if statusCode == 400 {
+                            print(response.result)
+                            print(response.description)
+                            self.errorAlert(message: "Please upload the image again.")
+                        } else if statusCode == 403 {
+                            print(response.result)
+                            let newViewController = LoginViewcontroller()
+                            let navigationController = UINavigationController(rootViewController: newViewController)
+                            navigationController.modalPresentationStyle = .fullScreen
+                            self.present(navigationController, animated: true, completion: nil)
+                        } else {
+                            print("statusCode : \(statusCode) / Result : \(response.result)")
+                            self.errorAlert(message: "Internal Server error ☠️")
+                        }
+                    case .failure(let error):
+                        self.errorAlert(message: "Server error ☠️ Please contact the administrator.")
+                        print("Error: \(error.localizedDescription)")
+                    }
                 }
-              }
-            }, to: profileURL, headers: header).response { response in
-              switch response.result {
-              case .success(_):
-                guard let statusCode = response.response?.statusCode else { return }
-                if statusCode == 201 {
-                  self.errorAlert(message: "Success Profile Update!")
-                } else if statusCode == 400 {
-                    print(response.result)
-                  print(response.description)
-                    self.errorAlert(message: "Please upload the image again.")
-                } else if statusCode == 403 {
-                    print(response.result)
-                    let newViewController = LoginViewcontroller()
-                    let navigationController = UINavigationController(rootViewController: newViewController)
-                    navigationController.modalPresentationStyle = .fullScreen
-                    self.present(navigationController, animated: true, completion: nil)
-                } else {
-                    print("statusCode : \(statusCode) / Result : \(response.result)")
-                    self.errorAlert(message: "Internal Server error ☠️")
-                }
-              case .failure(let error):
-                self.errorAlert(message: "Server error ☠️ Please contact the administrator.")
-                print("Error: \(error.localizedDescription)")
-              }
             }
+            
+        }
+        
+        
     }
     
     func sendPatchRequest(nickname : String) {
         let nicknameURL = MyPageUrlCategory().CHANGE_NICKNAME_URL
         
         let header : HTTPHeaders = [
-          "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
-          "Content-Type": "application/json"
+            "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
+            "Content-Type": "application/json"
         ]
-    
+        
         let nicknameParameters: Parameters = [
             "nickname": nickname
         ]
         
         AF.request(nicknameURL, method: .patch, parameters: nicknameParameters, encoding: JSONEncoding.default ,headers: header)
-          .responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                guard let statusCode = response.response?.statusCode else { return }
-                if statusCode == 201 {
-                    if let jsonResponse = data as? [String: String],
-                       let nickname = jsonResponse["nickname"] {
+            .responseJSON { response in
+                switch response.result {
+                case .success(_):
+                    guard let statusCode = response.response?.statusCode else { return }
+                    if statusCode == 201 {
                         UserDefaults.standard.set(nickname, forKey: "Nickname")
+                        self.fetchProfileImage()
+                    } else if statusCode == 400 {
+                        print(response.result)
+                        self.errorAlert(message: "닉네임 형식이 올바르지 않거나 현재 닉네임입니다.")
+                    } else if statusCode == 403 {
+                        print(response.result)
+                        let newViewController = LoginViewcontroller()
+                        let navigationController = UINavigationController(rootViewController: newViewController)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        self.present(navigationController, animated: true, completion: nil)
+                    } else {
+                        print(response.result)
+                        self.errorAlert(message: "서버 오류☠️\n관리자에게 문의 부탁드립니다.")
                     }
-                } else if statusCode == 400 {
-                    print(response.result)
-                    self.errorAlert(message: "닉네임 형식이 올바르지 않습니다.")
-                } else if statusCode == 403 {
-                    print(response.result)
-                    let newViewController = LoginViewcontroller()
-                    let navigationController = UINavigationController(rootViewController: newViewController)
-                    navigationController.modalPresentationStyle = .fullScreen
-                    self.present(navigationController, animated: true, completion: nil)
-                } else {
-                    print(response.result)
-                    self.errorAlert(message: "서버 오류☠️\n관리자에게 문의 부탁드립니다.")
+                case .failure(let error):
+                    self.errorAlert(message: "요청 실패: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                self.errorAlert(message: "요청 실패: \(error.localizedDescription)")
             }
-        }
     }
 }
 
@@ -398,16 +410,16 @@ private extension EditProfileViewController {
 // MARK: - PreviewProvider
 
 struct EditProfileViewController_Previews: PreviewProvider {
-  static var previews: some View {
-    Container().edgesIgnoringSafeArea(.all)
-  }
-  
-  struct Container: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-      let homeViewController = EditProfileViewController()
-      return UINavigationController(rootViewController: homeViewController)
+    static var previews: some View {
+        Container().edgesIgnoringSafeArea(.all)
     }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-    typealias UIViewControllerType = UIViewController
-  }
+    
+    struct Container: UIViewControllerRepresentable {
+        func makeUIViewController(context: Context) -> UIViewController {
+            let homeViewController = EditProfileViewController()
+            return UINavigationController(rootViewController: homeViewController)
+        }
+        func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+        typealias UIViewControllerType = UIViewController
+    }
 }

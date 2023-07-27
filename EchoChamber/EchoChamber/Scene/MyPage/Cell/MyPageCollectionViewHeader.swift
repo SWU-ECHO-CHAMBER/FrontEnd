@@ -28,14 +28,6 @@ class MyPageCollectionViewHeader : UICollectionReusableView {
         imageView.clipsToBounds = true
         imageView.widthAnchor.constraint(equalToConstant: 90.0).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 90.0).isActive = true
-        
-        let imagePath = "/Users/mokjeong-a/Desktop/Images/ECHO_Image/\(UserDefaults.standard.string(forKey: "Email") ?? "").jpeg"
-        
-        if let image = UIImage(contentsOfFile: imagePath) {
-            imageView.image = image
-        } else {
-            imageView.image = UIImage(named: "MyProfile")
-        }
 
         return imageView
     }()
@@ -108,6 +100,15 @@ class MyPageCollectionViewHeader : UICollectionReusableView {
     
     func setup() {
         self.setupLayout()
+        self.userNameLabel.text = UserDefaults.standard.string(forKey: "Nickname") ?? "Your Name"
+        
+        let imagePath = "/Users/mokjeong-a/Desktop/Images/ECHO_Image/\(UserDefaults.standard.string(forKey: "Email") ?? "").jpeg"
+        
+        if let image = UIImage(contentsOfFile: imagePath) {
+            self.userProfileImageView.image = image
+        } else {
+            self.userProfileImageView.image = UIImage(named: "MyProfile")
+        }
     }
 }
 
