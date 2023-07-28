@@ -363,8 +363,10 @@ private extension LoginViewcontroller {
             case .success(let loginResponse):
                 guard let statusCode = response.response?.statusCode else { return }
                 if statusCode == LoginStatusCode.ok.rawValue {
+                    
                     let accessToken = loginResponse.data.access_token
                     UserDefaults.standard.set(accessToken, forKey: "AccessToken")
+                    UserDefaults.standard.set(email, forKey: "Email")
                     
                     let newViewController = TabBarController()
                     let navigationController = UINavigationController(rootViewController: newViewController)

@@ -711,7 +711,6 @@ private extension RegisterViewController {
                     guard let statusCode = response.response?.statusCode else { return }
                     if statusCode == 200 {
                         UserDefaults.standard.set(nickname, forKey: "Nickname")
-                        UserDefaults.standard.set(email, forKey: "Email")
                         self.registerSuccessAlert(message: "Membership registration completed! 🎉")
                     } else if statusCode == 400 {
                         print(response.description)

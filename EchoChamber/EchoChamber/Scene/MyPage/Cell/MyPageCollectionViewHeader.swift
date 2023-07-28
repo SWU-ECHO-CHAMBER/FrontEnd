@@ -102,7 +102,8 @@ class MyPageCollectionViewHeader : UICollectionReusableView {
         self.setupLayout()
         self.userNameLabel.text = UserDefaults.standard.string(forKey: "Nickname") ?? "Your Name"
         
-        let imagePath = "/Users/mokjeong-a/Desktop/Images/ECHO_Image/\(UserDefaults.standard.string(forKey: "Email") ?? "").jpeg"
+        guard let email = UserDefaults.standard.string(forKey: "Email") else { return }
+        let imagePath = "/Users/mokjeong-a/Desktop/Images/ECHO_Image/\(email).jpeg"
         
         if let image = UIImage(contentsOfFile: imagePath) {
             self.userProfileImageView.image = image

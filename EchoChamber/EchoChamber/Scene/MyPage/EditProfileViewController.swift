@@ -265,16 +265,16 @@ private extension EditProfileViewController {
         present(actionSheet, animated: true)
     }
     
+    @objc func didTapDoneButton() {
+        guard let nickname = self.usernameTextField.text else { return }
+        self.sendPatchRequest(nickname: nickname)
+    }
+    
     @objc func didTapCamerButton() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
-    }
-    
-    @objc func didTapDoneButton() {
-        guard let nickname = self.usernameTextField.text else { return }
-        self.sendPatchRequest(nickname: nickname)
     }
     
     @objc func keyboardWillshowHandle(notification: NSNotification) {
@@ -338,7 +338,6 @@ private extension EditProfileViewController {
                         guard let statusCode = response.response?.statusCode else { return }
                         print("statusCode : \(statusCode) / data : \(response.result)")
                         if statusCode == 201 {
-                            // self.errorAlert(message: "Suceess Upload 🎉")
                             self.navigationController?.popViewController(animated: true)
                         } else if statusCode == 400 {
                             print(response.result)
