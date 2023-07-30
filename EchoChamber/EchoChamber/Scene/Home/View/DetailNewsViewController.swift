@@ -19,6 +19,7 @@ class DetailNewsViewController : UIViewController {
     private let contentView = UIView()
     
     private var url : String = ""
+    private var contentViewHeightConstraints: Constraint?
 
     var newsID: Int?
     
@@ -54,6 +55,7 @@ class DetailNewsViewController : UIViewController {
         let imageView = UIImageView()
         
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = true
         
         if let imageURL = URL(string: "https://i.pinimg.com/564x/25/cb/0b/25cb0b4b31c9b5c0a82fbe15b4e10ad8.jpg") {
@@ -85,13 +87,13 @@ class DetailNewsViewController : UIViewController {
         
         self.fetchNewDetail(completionHandler: { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
+                
             case let .success(result):
                 if result.data.marked == true {
                     self.navigationItem.rightBarButtonItems?[1].image = UIImage(named: "Bookmark_Color")?.resize(to: CGSize(width: 22.0, height: 22.0))
                 }
-
+                
                 self.titleLabel.text = result.data.title
                 self.authorLabel.text = "By \(result.data.author), \(result.data.source)"
                 
@@ -100,14 +102,13 @@ class DetailNewsViewController : UIViewController {
                 }
                 
                 self.newsTextLabel.text = result.data.content
+                
                 self.publishedLabel.text = "Published \(self.formatDateTimeWithRelativeString(result.data.publishedAt, format: "yyyy년 MM월 d일"))"
                 
                 self.url = result.data.url
-                
-                let labelSize = self.newsTextLabel.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-                self.contentView.heightAnchor.constraint(equalToConstant: labelSize.height).isActive = true
+    
             case let .failure(error):
-              print("ERROR : \(error)")
+              print("FetchNewDetail ERROR : \(error)")
             }
           }
         )
@@ -124,6 +125,10 @@ private extension DetailNewsViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
+        newsTextLabel.sizeToFit()
+
+        scrollView.isScrollEnabled = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         newsTextLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -141,10 +146,10 @@ private extension DetailNewsViewController {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
         }
-        
+    
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-            $0.height.equalToSuperview()
+            $0.height.equalTo(3200.0)
         }
         
         titleLabel.snp.makeConstraints {
@@ -167,20 +172,18 @@ private extension DetailNewsViewController {
             $0.trailing.equalTo(titleLabel.snp.trailing)
             $0.width.equalTo(titleLabel.snp.width)
         }
-        
+
         newsImageView.snp.makeConstraints {
             $0.top.equalTo(publishedLabel.snp.bottom).offset(20.0)
-            $0.leading.equalTo(titleLabel.snp.leading)
-            $0.trailing.equalTo(titleLabel.snp.trailing)
+            $0.leading.equalToSuperview().inset(32.0)
+            $0.trailing.equalToSuperview().inset(32.0)
             $0.height.equalTo(245.0)
-            $0.width.equalTo(UIScreen.main.bounds.width - (33*2))
         }
         
         newsTextLabel.snp.makeConstraints {
             $0.top.equalTo(newsImageView.snp.bottom).offset(20.0)
             $0.leading.equalTo(titleLabel.snp.leading)
             $0.trailing.equalTo(titleLabel.snp.trailing)
-            $0.width.equalTo(titleLabel.snp.width)
         }
     }
     
@@ -265,6 +268,7 @@ private extension DetailNewsViewController {
                 switch response.result {
                 case .success(let successData):
                     guard let statusCode = response.response?.statusCode else { return }
+                    
                     if statusCode == 200 {
                         if successData.data.marked == true {
                             DispatchQueue.main.async {
@@ -281,6 +285,28 @@ private extension DetailNewsViewController {
                         navigationController.modalTransitionStyle = .crossDissolve
                         navigationController.modalPresentationStyle = .fullScreen
                         self.present(navigationController, animated: true, completion: nil)
+                    } else if statusCode == 403 {
+                        Token().reissuingToken (completionHandler: { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case .success(_):
+                                if statusCode == 200 {
+                                    self.patchBookmark()
+                                } else if statusCode == 401 {
+                                    let newViewController = LoginViewcontroller()
+                                      let navigationController = UINavigationController(rootViewController: newViewController)
+                                      navigationController.modalPresentationStyle = .fullScreen
+                                      self.present(navigationController, animated: true, completion: nil)
+                                } else if statusCode == 403 {
+                                    return
+                                } else {
+                                    self.alerController(title: "", message: "Internal Server Error. Try Again.")
+                                }
+                            case let .failure(error):
+                                print("Token Parsing ERROR : \(error.localizedDescription)")
+                            }
+                          }
+                        )
                     } else {
                         self.alerController(title: "ERROR", message: "☠️ Server Error")
                     }
@@ -315,22 +341,80 @@ private extension DetailNewsViewController {
         
         AF.request(url, method: .get, headers: header)
             .responseData(completionHandler: { response in
-                
                 switch response.result {
-                case let .success(data):
-                    do {
-                        let decoder = JSONDecoder()
-                        let result = try decoder.decode(NewsDetail.self, from: data)
-                        completionHandler(.success(result))
-                    } catch {
-                        completionHandler(.failure(error))
+                case let .success(successData):
+                    
+                    guard let statusCode = response.response?.statusCode else { return }
+                    print("Success StatusCode : \(statusCode)")
+                    
+                    if statusCode == 200 {
+                        do {
+                            let decoder = JSONDecoder()
+                            let result = try decoder.decode(NewsDetail.self, from: successData)
+                            completionHandler(.success(result))
+                        } catch {
+                            completionHandler(.failure(error))
+                        }
+                    } else if statusCode == 400 {
+                        let newController = LoginViewcontroller()
+                        let navigationController = UINavigationController(rootViewController: newController)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        self.present(newController, animated: true)
+                    } else if statusCode == 403 {
+                        self.refreshTokenIfNeeded()
+                    } else {
+                        self.alerController(title: "Server Error", message: "네트워크 상태를 확인해주세요!")
                     }
                 case let .failure(error):
+                    guard let statusCode = response.response?.statusCode else { return }
+                    print("FetchNewsDetail StatusCode : \(statusCode)")
                     completionHandler(.failure(error))
                 }
             }
         )
     }
+    
+    func refreshTokenIfNeeded() {
+        guard let accessToken = UserDefaults.standard.string(forKey: "AccessToken"),
+              let refreshToken = UserDefaults.standard.string(forKey: "RefreshToken") else {
+            return
+        }
+        
+        let url = LoginUrlCategory().REFRESH_TOKEN_URL
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(accessToken)",
+            "Refresh": "Bearer \(refreshToken)"
+        ]
+        
+        AF.request(url, method: .get, headers: headers)
+            .responseDecodable { [weak self] (response: DataResponse<TokenResponseData, AFError>) in
+                guard let self = self else { return }
+                
+                switch response.result {
+                case .success(let data):
+                    guard let statusCode = response.response?.statusCode else { return }
+                    if statusCode == 200 {
+
+                        let accessToken = data.data.access_token
+                        let refreshToken = data.data.refresh_token
+                        
+                        UserDefaults.standard.set(accessToken, forKey: "AccessToken")
+                        UserDefaults.standard.set(refreshToken, forKey: "RefreshToken")
+                    } else if statusCode == 401 {
+                        let newController = LoginViewcontroller()
+                        let navigationController = UINavigationController(rootViewController: newController)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        self.present(navigationController, animated: true)
+                    } else {
+                        self.alerController(title: "Server Error", message: "네트워크 상태를 확인해주세요!")
+                    }
+                case .failure(let error):
+                    self.alerController(title: "Server Error", message: "네트워크 상태를 확인해주세요!")
+                    print("PATCH 요청 실패: \(error)")
+                }
+            }
+    }
+
 }
 
 // MARK: - Navigation

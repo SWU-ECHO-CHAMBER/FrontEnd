@@ -344,6 +344,7 @@ struct LoginResponse: Decodable {
 
 struct UserData: Decodable {
     let access_token: String
+    let refresh_token : String
 }
 
 private extension LoginViewcontroller {
@@ -365,7 +366,10 @@ private extension LoginViewcontroller {
                 if statusCode == LoginStatusCode.ok.rawValue {
                     
                     let accessToken = loginResponse.data.access_token
+                    let refreshToken = loginResponse.data.refresh_token
+                    
                     UserDefaults.standard.set(accessToken, forKey: "AccessToken")
+                    UserDefaults.standard.set(refreshToken, forKey: "RefreshToken")
                     UserDefaults.standard.set(email, forKey: "Email")
                     
                     let newViewController = TabBarController()

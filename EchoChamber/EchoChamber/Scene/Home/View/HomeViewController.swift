@@ -147,6 +147,7 @@ extension HomeViewController : UICollectionViewDelegate {
         
         newViewController.newsID = newsID
         newViewController.view.backgroundColor = .white
+        newViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(newViewController, animated: true)
     }
 }

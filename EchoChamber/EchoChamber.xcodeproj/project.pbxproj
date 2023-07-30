@@ -29,6 +29,7 @@
 		518697FA2A6A79260066F501 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697F92A6A79260066F501 /* SettingViewController.swift */; };
 		518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */; };
 		518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */; };
+		5199CA432A7394BA005C4C6F /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5199CA422A7394BA005C4C6F /* Token.swift */; };
 		51B08EEE2A7197690088DBE4 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B08EED2A7197690088DBE4 /* ChangePasswordViewController.swift */; };
 		51B535DF2A542EC500FB64BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535DE2A542EC500FB64BE /* AppDelegate.swift */; };
 		51B535E12A542EC500FB64BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B535E02A542EC500FB64BE /* SceneDelegate.swift */; };
@@ -62,6 +63,7 @@
 		518697F92A6A79260066F501 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		518697FD2A6AA76E0066F501 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		518698012A6AD9780066F501 /* MypageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageCollectionViewCell.swift; sourceTree = "<group>"; };
+		5199CA422A7394BA005C4C6F /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		51B08EED2A7197690088DBE4 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		51B535DB2A542EC500FB64BE /* EchoChamber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EchoChamber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B535DE2A542EC500FB64BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			children = (
 				51F9CE412A6D0E37000200EB /* URL.swift */,
 				51F9CE432A6D1FDF000200EB /* StatusCode.swift */,
+				5199CA422A7394BA005C4C6F /* Token.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				518697F82A6A6D440066F501 /* EditProfileViewController.swift in Sources */,
 				51F9CE4B2A6D6773000200EB /* NewsTop.swift in Sources */,
 				518697FE2A6AA76E0066F501 /* SettingTableViewCell.swift in Sources */,
+				5199CA432A7394BA005C4C6F /* Token.swift in Sources */,
 				51F9CE402A6CE7D5000200EB /* RegisterViewController.swift in Sources */,
 				51F9CE442A6D1FDF000200EB /* StatusCode.swift in Sources */,
 				518698022A6AD9780066F501 /* MypageCollectionViewCell.swift in Sources */,

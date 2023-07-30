@@ -113,9 +113,9 @@ class EditProfileViewController : UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle(notification: )), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandle), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -361,8 +361,6 @@ private extension EditProfileViewController {
             }
             
         }
-        
-        
     }
     
     func sendPatchRequest(nickname : String) {

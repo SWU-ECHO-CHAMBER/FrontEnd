@@ -239,8 +239,6 @@ class RegisterViewController : UIViewController {
         textField.leftView = nickNameSpacingView
         textField.rightView = stackView
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
         return textField
     }()
     
@@ -282,18 +280,25 @@ class RegisterViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupLayout()
-        self.keyboardNotification()
+        self.keyboardDownNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillHideHandle), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-    
+
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -455,16 +460,7 @@ extension RegisterViewController : UITextFieldDelegate {
         
             return checkFormatNickname(text: newString)
         }
-        
         return true
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField == nicknameTextField {
-            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
-        } else {
-            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        }
     }
 }
 
@@ -516,7 +512,7 @@ private extension RegisterViewController {
         }
     }
     
-    func keyboardNotification() {
+    func keyboardDownNotification() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
           view.addGestureRecognizer(tap)
     }
@@ -597,13 +593,12 @@ private extension RegisterViewController {
         }
     }
     
-    @objc func keyboardWillshowHandle(notification: NSNotification, textField : UITextField) {
-        print("keyboardWillshow")
+    @objc func registerKeyboardWillshowHandle(notification: NSNotification) {
 
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
 
             if keyboardSize.height > nicknameTextField.frame.origin.y {
-                let distance = keyboardSize.height - nicknameTextField.frame.origin.y
+                let distance = nicknameTextField.frame.origin.y - keyboardSize.height
                 
                 UIView.animate(withDuration: 0.3) {
                     self.view.frame.origin.y = distance + self.nicknameTextField.frame.height
@@ -612,8 +607,8 @@ private extension RegisterViewController {
         }
     }
 
-    @objc func keyboardWillHideHandle() {
-        print("keyboardWillHide")
+    @objc func registerKeyboardWillHideHandle() {
+        
     }
 }
 
