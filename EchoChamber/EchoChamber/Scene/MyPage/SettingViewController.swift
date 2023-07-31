@@ -128,6 +128,10 @@ private extension SettingViewController {
     
     func withdrawalAction() {
         let alertController = UIAlertController(title: "❗️Alert❗️", message: "Are you sure you want to drop out?", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            
+        }
 
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
             let newViewController = LoginViewcontroller()
@@ -136,17 +140,11 @@ private extension SettingViewController {
             self.present(navigationController, animated: true, completion: nil)
         }
 
-        let cancelAction = UIAlertAction(title: "No", style: .cancel) { _ in
-            
-        }
-
-        alertController.addAction(okAction)
         alertController.addAction(cancelAction)
-
+        alertController.addAction(okAction)
+        
         present(alertController, animated: true, completion: nil)
     }
-
-
 }
 
 

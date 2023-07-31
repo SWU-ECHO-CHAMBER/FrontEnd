@@ -285,10 +285,6 @@ class RegisterViewController : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillHideHandle), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -417,6 +413,15 @@ struct RegisterViewController_Previews: PreviewProvider {
 // MARK: - UITextFieldDelegate
 
 extension RegisterViewController : UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+      textField.resignFirstResponder()
+        UIView.animate(withDuration: 0.3) {
+            self.view.frame.origin.y = 0
+        }
+      return true
+    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     
         if textField.tag == 1 {
@@ -462,9 +467,21 @@ extension RegisterViewController : UITextFieldDelegate {
         }
         return true
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+       
+        NotificationCenter.default.removeObserver(self)
+        
+        if textField.tag == 3 {
+            NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillshowHandle), name: UIResponder.keyboardWillShowNotification, object: nil)
+        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(registerKeyboardWillHideHandle), name: UIResponder.keyboardWillHideNotification, object: nil)
+        }
+    }
+    
 }
 
-// MARK: - UITextFieldDelegate 관련된 메서드들
+// MARK: - UITextFieldDelegate 관련된 메서드
 
 private extension RegisterViewController {
     
@@ -594,14 +611,13 @@ private extension RegisterViewController {
     }
     
     @objc func registerKeyboardWillshowHandle(notification: NSNotification) {
-
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
 
-            if keyboardSize.height > nicknameTextField.frame.origin.y {
-                let distance = nicknameTextField.frame.origin.y - keyboardSize.height
+            if keyboardSize.height < nicknameTextField.frame.origin.y {
+                let distance = keyboardSize.height - nicknameTextField.frame.origin.y
                 
                 UIView.animate(withDuration: 0.3) {
-                    self.view.frame.origin.y = distance + self.nicknameTextField.frame.height
+                    self.view.frame.origin.y = (distance / 1.1) + self.nicknameTextField.frame.height
                 }
             }
         }
