@@ -31,7 +31,7 @@ class MypageCollectionViewCell : UICollectionViewCell {
     
     private lazy var titleLabel : UILabel = {
         let label = UILabel()
-        label.text = "Police share new details about the disappearance of Carlee Russell, the woman who went missing in Alabama after calling 911 about a child on an interstate"
+        label.text = "???"
         label.font = .systemFont(ofSize: 15.0, weight: .semibold)
         label.textColor = .textColor
         label.numberOfLines = 3
@@ -42,7 +42,7 @@ class MypageCollectionViewCell : UICollectionViewCell {
     
     private lazy var subtitleLabel : UILabel = {
         let label = UILabel()
-        label.text = "By Brad Lendon, CNN |  12:17 AM"
+        label.text = "???, ??? |  ???"
         label.font = .systemFont(ofSize: 12.0, weight: .regular)
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
@@ -53,6 +53,16 @@ class MypageCollectionViewCell : UICollectionViewCell {
     
     func setup() {
         self.setupLayout()
+    }
+    
+    func setupServer(with newsData: Bookmark.BookmarkDataClass) {
+        
+        if let imageURL = URL(string: newsData.imageURL ) {
+            self.cellImageView.kf.setImage(with: imageURL)
+        }
+        self.titleLabel.text = newsData.title
+        let inputDateString = newsData.publishedAt
+        self.subtitleLabel.text = "By \(newsData.author), \(newsData.source) | \(self.formatDateTimeWithRelativeString(newsData.publishedAt, format: "yyyy년 MM월 d일"))"
     }
     
 }
@@ -84,6 +94,27 @@ private extension MypageCollectionViewCell {
             $0.trailing.lessThanOrEqualToSuperview()
             $0.bottom.equalTo(cellImageView.snp.bottom)
         }
+    }
+    
+    func isDateToday(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInToday(date)
+    }
+    
+    func formatDateTimeWithRelativeString(_ dateString: String, format: String) -> String {
+        guard let date = formatStringToDateTime(dateString, format: "yyyy-MM-dd'T'HH:mm:ss") else {
+            return "Invalid date format"
+        }
         
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+
+        if isDateToday(date) {
+            dateFormatter.dateFormat = "h:mm a"
+            return dateFormatter.string(from: date)
+        } else {
+            dateFormatter.dateFormat = format
+            return dateFormatter.string(from: date)
+        }
     }
 }

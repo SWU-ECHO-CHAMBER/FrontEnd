@@ -21,18 +21,20 @@ class MyPageCollectionViewHeader : UICollectionReusableView {
     
     weak var delegate: MyPageCollectionViewHeaderDelegate?
     
-    private lazy var UserProfileImageView : UIImageView = {
+    private lazy var userProfileImageView : UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "MyProfile")
-        imageView.widthAnchor.constraint(equalToConstant: 75.94).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 75.94).isActive = true
         
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.widthAnchor.constraint(equalToConstant: 90.0).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 90.0).isActive = true
+
         return imageView
     }()
     
     private lazy var userNameLabel : UILabel = {
         let label = UILabel()
-        label.text = "USER NAME"
+        label.text = UserDefaults.standard.string(forKey: "Nickname") ?? "Your Name"
         label.font = UIFont(name: "LondrinaSolid-Regular", size: 20)
         label.textColor = .textColor
         label.numberOfLines = 1
@@ -91,13 +93,28 @@ class MyPageCollectionViewHeader : UICollectionReusableView {
         return stackView
     }()
     
-    func setup() {
-        self.setupLayout()
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.userProfileImageView.layer.cornerRadius = userProfileImageView.frame.size.width / 2
     }
     
+    func setup() {
+        self.setupLayout()
+        self.userNameLabel.text = UserDefaults.standard.string(forKey: "Nickname") ?? "Your Name"
+        
+        guard let email = UserDefaults.standard.string(forKey: "Email") else { return }
+        let imagePath = "/Users/mokjeong-a/Desktop/Images/ECHO_Image/\(email).jpeg"
+        
+        if let image = UIImage(contentsOfFile: imagePath) {
+            self.userProfileImageView.image = image
+        } else {
+            self.userProfileImageView.image = UIImage(named: "MyProfile")
+        }
+    }
 }
 
 private extension MyPageCollectionViewHeader {
+    
     @objc func didTapRecentAtricleButtonTapped() {
         self.bookmarkArticleButton.setTitleColor(.systemGrayColor, for: .normal)
         self.recentArticleButton.setTitleColor(.mainColor, for: .normal)
@@ -117,21 +134,21 @@ private extension MyPageCollectionViewHeader {
     
     func setupLayout() {
         [
-            UserProfileImageView,
+            userProfileImageView,
             userNameLabel,
             editButton,
             separatorView,
             articleLabelStackView,
         ].forEach {  addSubview($0) }
         
-        UserProfileImageView.snp.makeConstraints {
+        userProfileImageView.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).inset(inset*3)
             $0.centerX.equalTo(safeAreaLayoutGuide)
         }
         
         userNameLabel.snp.makeConstraints {
-            $0.top.equalTo(UserProfileImageView.snp.bottom).offset(inset)
-            $0.centerX.equalTo(UserProfileImageView.snp.centerX)
+            $0.top.equalTo(userProfileImageView.snp.bottom).offset(inset)
+            $0.centerX.equalTo(userProfileImageView.snp.centerX)
         }
         
         editButton.snp.makeConstraints {

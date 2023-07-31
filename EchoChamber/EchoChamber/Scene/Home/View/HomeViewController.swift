@@ -6,11 +6,24 @@
 //
 
 import UIKit
-import SnapKit
+import SwiftUI
+import Alamofire
 
 class HomeViewController : UIViewController {
     
     let inset: CGFloat = Inset.inset
+    
+    private var currentPage = 1
+    private var isLoading = false
+    private var newsList = [News.NewsData]()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+      let refreshControl = UIRefreshControl()
+      refreshControl.tintColor = .mainColor
+      refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        
+      return refreshControl
+    }()
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -25,6 +38,8 @@ class HomeViewController : UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        collectionView.refreshControl = refreshControl
         
         collectionView.backgroundColor = .systemBackground
         
@@ -43,6 +58,8 @@ class HomeViewController : UIViewController {
         
         self.setupNavigationController()
         self.setupLayout()
+        
+        self.setDataServer()
     }
 }
 
@@ -61,31 +78,53 @@ private extension HomeViewController {
             $0.bottom.equalToSuperview()
         }
     }
+    
+    func setDataServer() {
+        self.fetchNewsData(of: currentPage, completionHandler: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case  .success(let newsData):
+                self.newsList = newsData.data
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            case .failure(let error):
+                print("ERROR : \(error.localizedDescription)")
+            }
+          })
+    }
 }
 
-// MARK: - CollectionView
+// MARK: - CollectionView - UICollectionViewDataSource
 
 extension HomeViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return newsList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayNewsCollectionViewCell.identifier, for: indexPath) as? TodayNewsCollectionViewCell else { return UICollectionViewCell() }
         
+        let newsData = newsList[indexPath.item]
+        
         cell.setup()
+        cell.setupServer(with: newsData)
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader,
               let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HomeCollectionHeaderView", for: indexPath) as? HomeCollectionHeaderView else { return UICollectionReusableView() }
-        
+
         header.setupViews()
+        header.setDataServer()
         return header
     }
     
 }
+
+// MARK: - CollectionView - UICollectionViewDelegateFlowLayout
 
 extension HomeViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -98,10 +137,17 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: - CollectionView - UICollectionViewDelegate
+
 extension HomeViewController : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let newsID : Int = newsList[indexPath.item].newsID
         let newViewController = DetailNewsViewController()
+        
+        newViewController.newsID = newsID
         newViewController.view.backgroundColor = .white
+        newViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(newViewController, animated: true)
     }
 }
@@ -134,4 +180,74 @@ private extension HomeViewController {
         
         navigationItem.rightBarButtonItems = [rightFixedSpace, searchButton]
     }
+}
+
+struct HomeViewController_Previews: PreviewProvider {
+    static var previews: some View {
+        Container().edgesIgnoringSafeArea(.all)
+    }
+    
+    struct Container: UIViewControllerRepresentable {
+        func makeUIViewController(context: Context) -> UIViewController {
+            let homeViewController = HomeViewController()
+            return UINavigationController(rootViewController: homeViewController)
+        }
+        func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+        typealias UIViewControllerType = UIViewController
+    }
+}
+
+// MARK: - Server
+
+private extension HomeViewController {
+    private func fetchNewsData(of page: Int, completionHandler: @escaping (Result<News, Error>) -> Void) {
+        guard !isLoading else { return }
+        isLoading = true
+        
+        let url = NewsUrlCategory().ENTIRE_NEWS_URL + "?page=\(currentPage)&per_page=10"
+        
+        AF.request(url, method: .get).responseData { [weak self] response in
+            guard let self = self else { return }
+            
+            self.isLoading = false
+            
+            switch response.result {
+            case .success(let data):
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(News.self, from: data)
+                    
+                    self.newsList.append(contentsOf: result.data)
+                
+                    self.currentPage += 1
+            
+                    DispatchQueue.main.async {
+                        self.refreshControl.endRefreshing()
+                        self.collectionView.reloadData()
+                    }
+                    completionHandler(.success(result))
+                } catch {
+                    completionHandler(.failure(error))
+                }
+                
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    @objc func refresh() {
+        setDataServer()
+    }
+}
+
+extension HomeViewController: UITableViewDataSourcePrefetching {
+  func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+    guard currentPage != 1 else { return }
+    indexPaths.forEach {
+      if ($0.row + 1) / 25 + 1 == currentPage {
+          self.fetchNewsData(of: currentPage) { _ in }
+      }
+    }
+  }
 }

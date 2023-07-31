@@ -8,10 +8,14 @@
 import UIKit
 import SnapKit
 import SwiftUI
+import Alamofire
 
 class MyPageViewController : UIViewController {
     
     let inset : CGFloat = Inset.inset
+    
+    private var currentPage = 1
+    private var bookmarkList = [Bookmark.BookmarkDataClass]()
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -39,6 +43,12 @@ class MyPageViewController : UIViewController {
         self.setupNavigationController()
         self.setupLayout()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        self.setDataServer()
+    }
 }
 
 // MARK: - Navigation
@@ -53,20 +63,21 @@ private extension MyPageViewController {
         collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
     }
 }
 
 extension MyPageViewController : UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return bookmarkList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MypageCollectionViewCell.identifier, for: indexPath) as? MypageCollectionViewCell else { return UICollectionViewCell() }
         
+        let bookmarkData = bookmarkList[indexPath.item]
+        cell.setupServer(with: bookmarkData)
         cell.setup()
         
         return cell
@@ -83,6 +94,23 @@ extension MyPageViewController : UICollectionViewDataSource {
     
 }
 
+// MARK: - UICollectionViewDelegate
+
+extension MyPageViewController : UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let newsID : Int = bookmarkList[indexPath.item].newsID
+        let newViewController = DetailNewsViewController()
+        
+        newViewController.newsID = newsID
+        newViewController.view.backgroundColor = .white
+        navigationController?.pushViewController(newViewController, animated: true)
+    }
+}
+
+
+// MARK: - UICollectionViewDelegate
+
 extension MyPageViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -94,7 +122,7 @@ extension MyPageViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 280)
+        return CGSize(width: collectionView.frame.width, height: 300)
     }
 }
 
@@ -122,8 +150,9 @@ private extension MyPageViewController {
             navigationItem.leftBarButtonItems = [leftFixedSpace, logoButton]
         }
         
-        let logoutButton = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: nil)
+        let logoutButton = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: #selector(didTapLogoutButton))
         logoutButton.tintColor = .mainColor
+        
         
         let settingButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(didTapStettingButton))
         settingButton.tintColor = .mainColor
@@ -137,7 +166,7 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     @objc func didTapLogoutButton() {
-        print("Logout")
+        logout()
     }
     
     @objc func didTapStettingButton() {
@@ -181,3 +210,139 @@ extension MyPageViewController : MyPageCollectionViewHeaderDelegate {
         navigationController?.pushViewController(nextController, animated: true)
     }
 }
+
+// MARK: - Server (Logout)
+
+private extension MyPageViewController {
+    
+    func logout() {
+        let url = LoginUrlCategory().LOGOUT_URL
+        let accessToken = UserDefaults.standard.string(forKey: "AccessToken")
+        
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken ?? "")"]
+        
+        AF.request(url, method: .post, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: LoginResponse.self) { response in
+            
+            switch response.result {
+            
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else { return }
+                
+                if let statusCode = response.response?.statusCode {
+                    if statusCode == 200 || statusCode == 403 {
+                        self.logoutAction()
+                    } else {
+                        print("Error - Status Code: \(statusCode)")
+                        self.errorAlert(message: "Internal Server error ☠️")
+                    }
+                }
+            case .failure(_):
+                guard let statusCode = response.response?.statusCode else { return }
+                if let statusCode = response.response?.statusCode {
+                    if statusCode == 200 || statusCode == 403 {
+                        self.logoutAction()
+                    } else {
+                        print("Error - Status Code: \(statusCode)")
+                        self.errorAlert(message: "Internal Server error ☠️")
+                    }
+                }
+            }
+        }
+    }
+    
+    func logoutAction() {
+
+        let alertController = UIAlertController(title: "Logout Success", message: "You have been successfully logged out.", preferredStyle: .alert)
+
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            let newViewController = LoginViewcontroller()
+            let navigationController = UINavigationController(rootViewController: newViewController)
+            navigationController.modalTransitionStyle = .crossDissolve
+            navigationController.modalPresentationStyle = .fullScreen
+            self.present(navigationController, animated: true, completion: nil)
+        }
+
+        alertController.addAction(okAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
+
+}
+
+// MARK: - Server (Bookmark)
+
+private extension MyPageViewController {
+    
+    private func getBookmarkList(of page: Int, completionHandler: @escaping (Result<Bookmark, Error>) -> Void) {
+            
+            let url = MyPageUrlCategory().BOOKMARK_LIST_URL
+
+            let header : HTTPHeaders = [
+                "Authorization" :  "Bearer \(UserDefaults.standard.string(forKey: "AccessToken") ?? "")",
+            ]
+            
+            AF.request(url, method: .get, headers: header).responseData { [weak self] response in
+                guard let self = self else { return }
+                
+                switch response.result {
+                case .success(let data):
+                    guard let statusCode = response.response?.statusCode else { return }
+                    if statusCode == 200 {
+                        do {
+                            let decoder = JSONDecoder()
+                            let result = try decoder.decode(Bookmark.self, from: data)
+                            
+                            self.bookmarkList.append(contentsOf: result.data)
+                            self.currentPage += 1
+                    
+                            DispatchQueue.main.async {
+                                self.collectionView.reloadData()
+                            }
+                            completionHandler(.success(result))
+                        } catch {
+                            completionHandler(.failure(error))
+                        }
+                    } else if statusCode == 403 {
+                        let newViewController = LoginViewcontroller()
+                        let navigationController = UINavigationController(rootViewController: newViewController)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        self.present(navigationController, animated: true, completion: nil)
+                    } else {
+                        self.errorAlert(message: "Internal Server error ☠️")
+                    }
+                    
+                case .failure(let error):
+                    completionHandler(.failure(error))
+                }
+            }
+        }
+    
+    func errorAlert(message : String) {
+        let actionSheet = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+          [
+            UIAlertAction(title: "Close", style: .cancel) { _ in
+            }
+          ].forEach {
+            actionSheet.addAction($0)
+          }
+          present(actionSheet, animated: true)
+    }
+
+    func setDataServer() {
+        self.getBookmarkList(of: currentPage, completionHandler: { [weak self] result in
+          guard let self = self else { return }
+          switch result {
+          case  .success(let bookmarkData):
+              self.bookmarkList = bookmarkData.data
+              DispatchQueue.main.async {
+                  self.collectionView.reloadData()
+              }
+          case .failure(let error):
+              print("ERROR : \(error.localizedDescription)")
+          }
+        }
+        )
+    }
+    
+}
+

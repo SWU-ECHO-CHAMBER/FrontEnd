@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SwiftUI
+import Alamofire
 
 class SettingViewController : UITableViewController {
     
@@ -44,7 +45,6 @@ class SettingViewController : UITableViewController {
         return sections[section].count
     }
     
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.identifier, for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
@@ -69,6 +69,19 @@ class SettingViewController : UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.row == 1 {
+            let newViewController = ChangePasswordViewController()
+            navigationController?.pushViewController(newViewController, animated: true)
+        }
+        
+        if indexPath.section == 0 && indexPath.row == 2 {
+            self.withdrawalServer()
+        }
+        
+    }
+
+    
     // MARK: - TableView Style
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 70.0
@@ -81,6 +94,58 @@ class SettingViewController : UITableViewController {
 
 // MARK: - Navigation
 
+
+// MARK: - method
+
+private extension SettingViewController {
+    
+    func withdrawalServer() {
+        let url = LoginUrlCategory().LEAVE_URL
+        let accessToken = UserDefaults.standard.string(forKey: "AccessToken")
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken ?? "")"]
+
+        AF.request(url, method: .post, headers: headers)
+            .responseJSON { response in
+                switch response.result {
+                case .success(let data):
+                    self.withdrawalAction()
+                case .failure(let error):
+                    self.errorAlert(message: error.localizedDescription)
+                }
+            }
+    }
+    
+    func errorAlert(message : String) {
+        let actionSheet = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        [
+            UIAlertAction(title: "Close", style: .cancel) { _ in
+            }
+        ].forEach {
+            actionSheet.addAction($0)
+        }
+        present(actionSheet, animated: true)
+    }
+    
+    func withdrawalAction() {
+        let alertController = UIAlertController(title: "❗️Alert❗️", message: "Are you sure you want to drop out?", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            
+        }
+
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            let newViewController = LoginViewcontroller()
+            let navigationController = UINavigationController(rootViewController: newViewController)
+            navigationController.modalPresentationStyle = .fullScreen
+            self.present(navigationController, animated: true, completion: nil)
+        }
+
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+}
 
 
 // MARK: - PreviewProvider

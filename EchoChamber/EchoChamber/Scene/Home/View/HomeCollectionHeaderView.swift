@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Alamofire
 import Kingfisher
 
 class HomeCollectionHeaderView : UICollectionReusableView {
@@ -14,8 +15,10 @@ class HomeCollectionHeaderView : UICollectionReusableView {
     private let headerImageView : UIImageView = {
         let imageView = UIImageView()
         
+        let imageViewURL : String = "https://media.cnn.com/api/v1/images/stellar/prod/230719105428-trump-nevada-0708.jpg?c=16x9&q=w_800,c_fill"
+        
         imageView.contentMode = .scaleAspectFill
-        if let imageURL = URL(string: "https://media.cnn.com/api/v1/images/stellar/prod/230719105428-trump-nevada-0708.jpg?c=16x9&q=w_800,c_fill"){
+        if let imageURL = URL(string: imageViewURL){
           imageView.kf.setImage(with: imageURL)
         }
         
@@ -145,4 +148,64 @@ class HomeCollectionHeaderView : UICollectionReusableView {
             $0.leading.equalTo(todayLabel.snp.leading)
         }
     }
+    
+    func setDataServer() {
+        self.fetchNewsData(completionHandler: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(result):
+                
+                self.updateHeaderImage(imageURL: "\(result.data.imageURL ?? "https://i.pinimg.com/564x/25/cb/0b/25cb0b4b31c9b5c0a82fbe15b4e10ad8.jpg")")
+                self.newsTitle.text = result.data.title
+                self.newsAuthor.text = "\(result.data.author ?? "author"), \(result.data.source)"
+                self.newsPublished.text = self.updatePublishedTime(inputDateString: result.data.publishedAt)
+            case let .failure(error):
+                print("ERROR : \(error.localizedDescription)")
+            }
+          })
+    }
+    
+    func updateHeaderImage(imageURL: String) {
+        if let newImageURL = URL(string: imageURL) {
+            headerImageView.kf.setImage(with: newImageURL)
+        }
+    }
+    
+    func updatePublishedTime(inputDateString : String) -> String{
+        
+        let formattedDateString = formatDateTime(inputDateString, fromFormat: "yyyy-MM-dd'T'HH:mm:ss", toFormat: "h:mm a")
+
+        if let formattedDateString = formattedDateString {
+            return "Published \(formattedDateString)"
+        } else {
+            print("Invalid date format")
+            return "??"
+        }
+    }
 }
+
+private extension HomeCollectionHeaderView {
+    func fetchNewsData(
+      completionHandler: @escaping (Result <NewsTop, Error> ) -> Void
+    ) {
+        let url = NewsUrlCategory().POPULAR_NEWS_TOP_URL
+   
+      AF.request(url, method: .get)
+          .responseData(completionHandler: { response in
+          switch response.result {
+          case let .success(data):
+              do {
+                let decoder = JSONDecoder()
+                let result = try decoder.decode(NewsTop.self, from: data)
+                completionHandler(.success(result))
+              } catch {
+                completionHandler(.failure(error))
+              }
+          case let .failure(error):
+            completionHandler(.failure(error))
+          }
+          }
+        )
+    }
+}
+

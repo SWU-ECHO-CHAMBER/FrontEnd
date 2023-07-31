@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import SwiftUI
+import SnapKit
+import Alamofire
 
 class LoginViewcontroller : UIViewController {
+    
+    private var loginButtonActive : Bool = false
     
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -28,7 +33,6 @@ class LoginViewcontroller : UIViewController {
         textView.placeholder = "ex) echo_chamber"
         
         textView.delegate = self
-        // textView.text = "ex) echo_chamber"
         
         return textView
     }()
@@ -61,13 +65,24 @@ class LoginViewcontroller : UIViewController {
         return button
     }()
     
-    private lazy var signupLabel : UILabel = {
+    private lazy var errorLabel : UILabel = {
         let label = UILabel()
+        label.textColor = .errorColor
         label.font = .systemFont(ofSize: 15.0, weight: .regular)
-        label.textColor = UIColor.mainColor
-        label.text = "SIGN UP"
+        label.isHidden = true
+        label.text = "ERROR TEXT"
         
         return label
+    }()
+    
+    private lazy var signupButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("SIGN UP", for: .normal)
+        button.setTitleColor(.mainColor, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .regular)
+        button.addTarget(self, action: #selector(tapSignupButton), for: .touchUpInside)
+        
+        return button
     }()
     
     // MARK: - StackView
@@ -184,8 +199,9 @@ private extension LoginViewcontroller {
             idStackView,
             passwordStackView,
             loginButton,
+            errorLabel,
             socialIconStackView,
-            signupLabel
+            signupButton
         ].forEach {
             view.addSubview($0)
         }
@@ -210,6 +226,11 @@ private extension LoginViewcontroller {
             $0.leading.equalTo(idStackView.snp.leading)
             $0.trailing.equalTo(idStackView.snp.trailing)
             $0.height.equalTo(idStackView.snp.height)
+        }
+        
+        errorLabel.snp.makeConstraints {
+            $0.top.equalTo(passwordStackView.snp.bottom).offset(12.0)
+            $0.leading.equalTo(passwordStackView.snp.leading).inset(27.0)
         }
         
         userIconImageView.snp.makeConstraints {
@@ -247,22 +268,24 @@ private extension LoginViewcontroller {
             $0.width.equalTo(UIScreen.main.bounds.size.width - (104 * 2))
         }
         
-        signupLabel.snp.makeConstraints {
+        signupButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(inset)
             $0.centerX.equalToSuperview()
         }
     }
-    
 }
 
 // MARK: - @objc
 
 private extension LoginViewcontroller {
     @objc func tapLoginButton() {
-        let newViewController = TabBarController()
-        let navigationController = UINavigationController(rootViewController: newViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true, completion: nil)
+        login(email: idTextView.text ?? "", password: passwordTextView.text ?? "")
+    }
+    
+    @objc func tapSignupButton() {
+        let signUPController = RegisterViewController()
+        signUPController.view.backgroundColor = .white
+          navigationController?.pushViewController(signUPController, animated: true)
     }
 }
 
@@ -294,4 +317,88 @@ extension LoginViewcontroller : UITextFieldDelegate {
         passwordTextView.resignFirstResponder()
     }
     
+}
+
+// MARK: - PreviewProvider
+
+struct LoginViewcontroller_Previews: PreviewProvider {
+    static var previews: some View {
+        Container().edgesIgnoringSafeArea(.all)
+    }
+    
+    struct Container: UIViewControllerRepresentable {
+        func makeUIViewController(context: Context) -> UIViewController {
+            let homeViewController = LoginViewcontroller()
+            return UINavigationController(rootViewController: homeViewController)
+        }
+        func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+        typealias UIViewControllerType = UIViewController
+    }
+}
+
+// MARK: - Server
+
+struct LoginResponse: Decodable {
+    let data: UserData
+}
+
+struct UserData: Decodable {
+    let access_token: String
+    let refresh_token : String
+}
+
+private extension LoginViewcontroller {
+    
+    func login(email: String, password: String){
+        
+        let parameters: [String: Any] = [
+            "email": email,
+            "password": password
+        ]
+        
+        let url = LoginUrlCategory().EMAIL_LOGIN_URL
+        
+        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default).responseDecodable(of: LoginResponse.self) { response in
+            switch response.result {
+                
+            case .success(let loginResponse):
+                guard let statusCode = response.response?.statusCode else { return }
+                if statusCode == LoginStatusCode.ok.rawValue {
+                    
+                    let accessToken = loginResponse.data.access_token
+                    let refreshToken = loginResponse.data.refresh_token
+                    
+                    UserDefaults.standard.set(accessToken, forKey: "AccessToken")
+                    UserDefaults.standard.set(refreshToken, forKey: "RefreshToken")
+                    UserDefaults.standard.set(email, forKey: "Email")
+                    
+                    let newViewController = TabBarController()
+                    let navigationController = UINavigationController(rootViewController: newViewController)
+                    navigationController.modalPresentationStyle = .fullScreen
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                
+            case .failure(_):
+                guard let statusCode = response.response?.statusCode else { return }
+                
+                self.loginButtonActive = false
+                print("StatusCode : \(statusCode)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    self.errorLabel.text = LoginStatusCode(rawValue: statusCode)?.description
+                    self.errorLabel.isHidden = false
+                    
+                    self.loginButton.snp.removeConstraints()
+                    
+                    self.loginButton.snp.makeConstraints {
+                        $0.top.equalTo(self.passwordStackView.snp.bottom).offset(self.errorLabel.isHidden ? 24.0 : 53.0)
+                        $0.leading.equalTo(self.idStackView.snp.leading)
+                        $0.trailing.equalTo(self.idStackView.snp.trailing)
+                        $0.height.equalTo(54.0)
+                    }
+                }
+            }
+        }
+    }
 }
