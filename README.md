@@ -1,5 +1,8 @@
 # FrontEnd
 
+# 🔨 프로젝트 기술
+코드로만 구현
+
 # 🔨 프로젝트 화면 설명
 
 |Splach 페이지|로그인 페이지|회원가입 페이지|
@@ -36,5 +39,4 @@
 |<img width= 200 src = "https://github.com/SWU-ECHO-CHAMBER/FrontEnd/assets/87655596/b0ed451e-0565-4113-8f94-e21f7a848a8c"/>|
 
 # 🎥 프로젝트 시연
-<iframe width="1035" height="641" src="https://www.youtube.com/embed/A4SpJWn6clc" title="EchoChamber" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
+https://www.youtube.com/watch?v=A4SpJWn6clc
