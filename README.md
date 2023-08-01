@@ -36,5 +36,5 @@
 |<img width= 200 src = "https://github.com/SWU-ECHO-CHAMBER/FrontEnd/assets/87655596/b0ed451e-0565-4113-8f94-e21f7a848a8c"/>|
 
 # 🎥 프로젝트 시연
-[![Video Label](https://github.com/SWU-ECHO-CHAMBER/FrontEnd/assets/87655596/c1fefbd7-c6f9-486a-b5c7-0d8dc0924acc)](https://www.youtube.com/watch?v=A4SpJWn6clc)
+<iframe width="1035" height="641" src="https://www.youtube.com/embed/A4SpJWn6clc" title="EchoChamber" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
