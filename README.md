@@ -34,3 +34,7 @@
 |로그아웃 기능|
 |------|
 |<img width= 200 src = "https://github.com/SWU-ECHO-CHAMBER/FrontEnd/assets/87655596/b0ed451e-0565-4113-8f94-e21f7a848a8c"/>|
+
+# 🎥 프로젝트 시연
+[![Video Label](https://github.com/SWU-ECHO-CHAMBER/FrontEnd/assets/87655596/c1fefbd7-c6f9-486a-b5c7-0d8dc0924acc)](https://www.youtube.com/watch?v=A4SpJWn6clc)
+
